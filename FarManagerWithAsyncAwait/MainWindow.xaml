@@ -5,8 +5,265 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:FarManagerWithAsyncAwait"
         mc:Ignorable="d"
-        Title="MainWindow" Height="450" Width="800">
-    <Grid>
-        
+        Title="Far manager" Height="650" Width="800" Icon="far_manager.ico">
+
+    <Window.Resources>
+        <Style x:Key="fileButtons" TargetType="Button">
+            <Setter Property="Margin" Value="3,10"/>
+            <Setter Property="FontSize" Value="18"/>
+            <Setter Property="FontWeight" Value="Bold"/>
+            <Setter Property="Background" Value="#008281"/>
+        </Style>
+
+        <Style x:Key="fileButtons2" TargetType="ToggleButton">
+            <Setter Property="Margin" Value="3,10"/>
+            <Setter Property="FontSize" Value="18"/>
+            <Setter Property="FontWeight" Value="Bold"/>
+            <Setter Property="Background" Value="#008281"/>
+        </Style>
+
+        <Style TargetType="ListBoxItem">
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="ListBoxItem">
+                        <Border Name="_Border"
+                                Padding="5"
+                                Margin="3">
+                            <ContentPresenter />
+                        </Border>
+                        <ControlTemplate.Triggers>
+                            <Trigger Property="IsSelected" Value="true">
+                                <Setter TargetName="_Border" Property="Background" Value="#008281"/>
+                                <Setter Property="Foreground" Value="Snow"/>
+                                <Setter Property="FontWeight" Value="Bold"/>
+                            </Trigger>
+
+                        </ControlTemplate.Triggers>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+
+        <Style x:Key="listboxHeader" TargetType="TextBlock">
+            <Setter Property="VerticalAlignment" Value="Center"/>
+            <Setter Property="FontWeight" Value="Bold"/>
+            <Setter Property="Foreground" Value="#F2ED94"/>
+            <Setter Property="FontSize" Value="16"/>
+            <Setter Property="HorizontalAlignment" Value="Center"/>
+        </Style>
+
+    </Window.Resources>
+
+    <Grid Background="#010099">
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition/>
+            <ColumnDefinition/>
+        </Grid.ColumnDefinitions>
+
+        <Grid.RowDefinitions>
+            <RowDefinition Height="0.5*"/>
+            <RowDefinition/>
+            <RowDefinition/>
+            <RowDefinition Height="5*"/>
+            <RowDefinition Height="0.6*"/>
+            <RowDefinition/>
+        </Grid.RowDefinitions>
+
+        <TextBlock Text="{Binding CurrentDate}" Background="#008281" HorizontalAlignment="Left" FontSize="18" FontWeight="Bold"
+                       VerticalAlignment="Top"
+                       Padding="5,0"/>
+
+        <Grid Grid.Column="1">
+            <TextBlock Text="{Binding CurrentTime}" Background="#008281" HorizontalAlignment="Right" FontSize="18" FontWeight="Bold"
+                       VerticalAlignment="Top"
+                       Padding="5,0"/>
+        </Grid>
+
+        <Grid Grid.Row="1">
+            <Border BorderThickness="2,2,2,0" BorderBrush="#74C1FB" Margin="3,3,0,0">
+                <ComboBox Name="cmbFiles1" Margin="20,15" Height="40" FontSize="18" FontWeight="DemiBold" VerticalAlignment="Center" VerticalContentAlignment="Center" SelectionChanged="CmbFiles1_SelectionChanged">
+                    <ComboBoxItem Content="C:\" VerticalAlignment="Center" FontSize="16" FontWeight="DemiBold"/>
+                    <ComboBoxItem Content="D:\" VerticalAlignment="Center" FontSize="16" FontWeight="DemiBold"/>
+                </ComboBox>
+            </Border>
+        </Grid>
+
+        <Grid Grid.Column="1" Grid.Row="1">
+            <Border BorderThickness="0,2,2,0" BorderBrush="#74C1FB" Margin="0,3,3,0">
+                <ComboBox Name="cmbFiles2" Margin="20,15" Height="40" FontSize="18" FontWeight="DemiBold" VerticalAlignment="Center" VerticalContentAlignment="Center" SelectionChanged="CmbFiles2_SelectionChanged">
+                    <ComboBoxItem Content="C:\" VerticalAlignment="Center" FontSize="16" FontWeight="DemiBold"/>
+                    <ComboBoxItem Content="D:\" VerticalAlignment="Center" FontSize="16" FontWeight="DemiBold"/>
+                </ComboBox>
+            </Border>
+        </Grid>
+
+        <Grid Grid.Row="2">
+            <Border BorderThickness="2,0,2,2" BorderBrush="#74C1FB" Margin="3,0,0,0">
+                <TextBlock Name="tbFileDirectory1" FontSize="18" FontWeight="DemiBold" Text="{Binding ElementName=cmbFiles1, Path=SelectionBoxItem}" 
+                       Background="#008281" VerticalAlignment="Center" TextAlignment="Center" Margin="30,0" Padding="0,3"
+                           TextWrapping="Wrap"
+                           SizeChanged="TbFileFirectory_SizeChanged"/>
+            </Border>
+        </Grid>
+
+        <Grid Grid.Column="1" Grid.Row="2">
+            <Border BorderThickness="0,0,2,2" BorderBrush="#74C1FB" Margin="0,0,3,0">
+                <TextBlock Name="tbFileDirectory2" FontSize="18" FontWeight="DemiBold" Text="{Binding ElementName=cmbFiles2, Path=SelectionBoxItem}"
+                       Background="#008281" SizeChanged="TbFileFirectory_SizeChanged"
+                           VerticalAlignment="Center" TextWrapping="Wrap" TextAlignment="Center" Margin="30,0" Padding="0,3"/>
+            </Border>
+        </Grid>
+
+        <Grid Grid.Row="5" Grid.ColumnSpan="2" Background="Black">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition/>
+                <ColumnDefinition/>
+                <ColumnDefinition/>
+                <ColumnDefinition/>
+                <ColumnDefinition/>
+                <ColumnDefinition/>
+                <ColumnDefinition/>
+                <ColumnDefinition/>
+            </Grid.ColumnDefinitions>
+
+            <Button Content="Open" Name="btnOpen" Style="{StaticResource fileButtons}" Click="BtnOpen_Click"/>
+            <Grid Grid.Column="1">
+                <Button Content="Edit" Name="btnEdit" Style="{StaticResource fileButtons}" Click="BtnEdit_Click"/>
+            </Grid>
+            <Grid Grid.Column="2">
+                <Button Content="Copy" Name="btnCopy" Style="{StaticResource fileButtons}" Click="BtnCopy_Click"/>
+            </Grid>
+            <Grid Grid.Column="3">
+                <Button Content="Move" Name="btnMove" Style="{StaticResource fileButtons}" Click="BtnMove_Click"/>
+            </Grid>
+            <Grid Grid.Column="4">
+                <Button Content="Delete" Name="btnDelete" Style="{StaticResource fileButtons}" Click="BtnDelete_Click"/>
+            </Grid>
+            <Grid Grid.Column="5">
+                <Button Content="Proporties" Name="btnProporties" Style="{StaticResource fileButtons}" Click="BtnProporties_Click"/>
+            </Grid>
+            <Grid Grid.Column="6">
+                <ToggleButton Content="Enc/Dec" Name="btnEncDec" Style="{StaticResource fileButtons2}"
+                              IsEnabled="False"/>
+            </Grid>
+            <Grid Grid.Column="7">
+                <Button Content="Exit" Name="btnExit" Style="{StaticResource fileButtons}" Click="BtnExit_Click"/>
+            </Grid>
+        </Grid>
+
+        <Grid Grid.Row="3">
+            <ListBox Name="lbFiles1" Background="Transparent" Margin="3,0,0,0" MouseDoubleClick="LbFiles_MouseDoubleClick" SelectionChanged="LbFiles1_SelectionChanged">
+                <ListBox.Template>
+                    <ControlTemplate>
+                        <ScrollViewer>
+                            <Border BorderThickness="2,0,2,0" BorderBrush="#74C1FB">
+                                <DockPanel>
+                                    <Grid Height="30" DockPanel.Dock="Top" Background="Transparent">
+                                        <Grid.ColumnDefinitions>
+                                            <ColumnDefinition/>
+                                        </Grid.ColumnDefinitions>
+                                        <Button x:Name="btnBackFiles1" Content="↩" FontSize="20" Background="#008281" Foreground="Black" Margin="10,2,0,0"
+                                                HorizontalAlignment="Left" 
+                                                VerticalContentAlignment="Center"
+                                                HorizontalContentAlignment="Center"
+                                                FontWeight="Bold"
+                                                Padding="8,0,8,0"
+                                                Click="BtnBackFiles_Click"/>
+                                        <TextBlock Padding="5 0 0 0" Style="{StaticResource listboxHeader}">Name</TextBlock>
+                                    </Grid>
+                                    <ItemsPresenter></ItemsPresenter>
+                                </DockPanel>
+                            </Border>
+                        </ScrollViewer>
+                    </ControlTemplate>
+                </ListBox.Template>
+
+                <ListBox.ItemTemplate>
+                    <DataTemplate>
+                        <Grid>
+                            <TextBlock FontSize="15" FontWeight="SemiBold" Foreground="White" Text="{Binding}"/>
+                        </Grid>
+                    </DataTemplate>
+                </ListBox.ItemTemplate>
+            </ListBox>
+        </Grid>
+
+        <Grid Grid.Column="1" Grid.Row="3">
+            <ListBox Name="lbFiles2" Background="Transparent" Margin="0,0,3,0" MouseDoubleClick="LbFiles_MouseDoubleClick" SelectionChanged="LbFiles2_SelectionChanged">
+                <ListBox.Template>
+                    <ControlTemplate>
+                        <ScrollViewer>
+                            <Border BorderThickness="0,0,2,0" BorderBrush="#74C1FB">
+                                <DockPanel>
+                                    <Grid Height="30" DockPanel.Dock="Top" Background="Transparent">
+                                        <Grid.ColumnDefinitions>
+                                            <ColumnDefinition/>
+                                        </Grid.ColumnDefinitions>
+                                        <Button x:Name="btnBackFiles2" Content="↩" FontSize="20" Background="#008281" Foreground="Black" Margin="10,2,0,0"
+                                                HorizontalAlignment="Left" 
+                                                VerticalContentAlignment="Center"
+                                                HorizontalContentAlignment="Center"
+                                                FontWeight="Bold"
+                                                Padding="8,0,8,0"
+                                                Click="BtnBackFiles_Click"/>
+                                        <TextBlock Padding="5 0 0 0" Style="{StaticResource listboxHeader}">Name</TextBlock>
+                                    </Grid>
+                                    <ItemsPresenter></ItemsPresenter>
+                                </DockPanel>
+                            </Border>
+                        </ScrollViewer>
+                    </ControlTemplate>
+                </ListBox.Template>
+                <ListBox.ItemTemplate>
+                    <DataTemplate>
+                        <Grid>
+                            <TextBlock FontSize="15" FontWeight="SemiBold" Foreground="White" Text="{Binding}"/>
+                        </Grid>
+                    </DataTemplate>
+                </ListBox.ItemTemplate>
+            </ListBox>
+        </Grid>
+
+        <Grid Grid.Column="1" Grid.Row="4">
+            <Border BorderThickness="0,2,2,2" BorderBrush="#74C1FB" Margin="0,0,3,0">
+                <StackPanel Orientation="Horizontal" HorizontalAlignment="Center">
+                    <StackPanel.Resources>
+                        <Style TargetType="TextBlock">
+                            <Setter Property="FontSize" Value="18"/>
+                            <Setter Property="FontWeight" Value="SemiBold"/>
+                            <Setter Property="Foreground" Value="#74C1FB"/>
+                            <Setter Property="TextAlignment" Value="Center"/>
+                            <Setter Property="VerticalAlignment" Value="Center"/>
+                        </Style>
+                    </StackPanel.Resources>
+
+                    <TextBlock Name="usedBytes2" Text="0"/>
+                    <TextBlock Text=" bytes in " />
+                    <TextBlock Name="filesCount2" Text=" 0 " />
+                    <TextBlock Text=" files" />
+                </StackPanel>
+            </Border>
+        </Grid>
+
+        <Grid Grid.Row="4">
+            <Border BorderThickness="2" BorderBrush="#74C1FB" Margin="3,0,0,0">
+                <StackPanel Orientation="Horizontal" HorizontalAlignment="Center">
+                    <StackPanel.Resources>
+                        <Style TargetType="TextBlock">
+                            <Setter Property="FontSize" Value="18"/>
+                            <Setter Property="FontWeight" Value="SemiBold"/>
+                            <Setter Property="Foreground" Value="#74C1FB"/>
+                            <Setter Property="TextAlignment" Value="Center"/>
+                            <Setter Property="VerticalAlignment" Value="Center"/>
+                        </Style>
+                    </StackPanel.Resources>
+
+                    <TextBlock Name="usedBytes1" Text="0"/>
+                    <TextBlock Text=" bytes in " />
+                    <TextBlock Name="filesCount1" Text=" 0 " />
+                    <TextBlock Text=" files" />
+                </StackPanel>
+            </Border>
+        </Grid>
     </Grid>
 </Window>
